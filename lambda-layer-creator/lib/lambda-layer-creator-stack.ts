@@ -21,12 +21,18 @@ export class LambdaLayerCreatorStack extends cdk.Stack {
       description: 'pymysql-python',
     });
 
+    const jenkinsPythonLayer = new lambda.LayerVersion(this, 'jenkins-python', {
+      code: lambda.Code.fromAsset('./asset/python/jenkins/'),
+      description: 'jenkins-python',
+    });
+
     new cdk.CfnOutput(this, 'layers-output', {
       value: `
       const layers = {
         'awsSDK': lambda.LayerVersion.fromLayerVersionArn(this, 'awsSdk', '` + awsSDKPythonLayer.layerVersionArn + `'),
         'requests': lambda.LayerVersion.fromLayerVersionArn(this, 'requests', '` + requestsPythonLayer.layerVersionArn + `'),
-        'pymysql': lambda.LayerVersion.fromLayerVersionArn(this, 'pymysql', '` + pymysqlPythonLayer.layerVersionArn + `')
+        'pymysql': lambda.LayerVersion.fromLayerVersionArn(this, 'pymysql', '` + pymysqlPythonLayer.layerVersionArn + `'),
+        'jenkins': lambda.LayerVersion.fromLayerVersionArn(this, 'jenkins', '` + jenkinsPythonLayer.layerVersionArn + `')
       }`
     });
 
